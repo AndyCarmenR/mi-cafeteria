@@ -1,11 +1,15 @@
 package com.demo.mi_cafeteria.services;
 
+import com.demo.mi_cafeteria.model.Login;
 import com.demo.mi_cafeteria.model.RegistryRequest;
 import com.demo.mi_cafeteria.model.UsuarioInfo;
 import com.demo.mi_cafeteria.model.UsuarioPWD;
+import com.demo.mi_cafeteria.repository.LoginRepository;
 import com.demo.mi_cafeteria.repository.UsuarioPWDRepository;
+import com.demo.mi_cafeteria.utils.Constants;
 import com.demo.mi_cafeteria.utils.NullOrWhiteSpaceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +17,12 @@ public class UserPwdService {
 
     @Autowired
     private UsuarioPWDRepository usuarioPWDRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private LoginRepository loginRepository;
 
     public UsuarioPWD crearUsuarioPwd(RegistryRequest request, UsuarioInfo usuarioInfo){
 
@@ -26,5 +36,24 @@ public class UserPwdService {
         usuarioPWD.setUsuarioInfo(usuarioInfo);
 
         return usuarioPWDRepository.save(usuarioPWD);
+    }
+
+    public String login(String nickname, String password){
+        UsuarioPWD userPwd=usuarioPWDRepository.getUserByNickname(nickname);
+        if (userPwd == null) {
+            return Constants.NICKNAME_O_PWD_INCORRECTOS;
+        }
+        if (!passwordEncoder.matches(password, userPwd.getPassword())){
+            return Constants.NICKNAME_O_PWD_INCORRECTOS;
+        }
+        Login login=new Login();
+        login.setUsuarioPWD(userPwd);
+        login.setToken(jwtService.generarToken(userPwd.getNickname()));
+        try {
+            loginRepository.save(login);
+        } catch (Exception e) {
+            return Constants.HA_OCURRIDO_UN_ERROR_LOGIN.replace("_ERROR_",e.getMessage());
+        }
+        return login.getToken();
     }
 }

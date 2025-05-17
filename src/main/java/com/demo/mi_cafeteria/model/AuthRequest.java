@@ -4,11 +4,11 @@ public class AuthRequest {
     private String nickName;
     private String password;
 
-    public String getUsername() {
+    public String getNickName() {
         return nickName;
     }
 
-    public void setUsername(String username) {
+    public void setNickName(String username) {
         this.nickName = username;
     }
 
