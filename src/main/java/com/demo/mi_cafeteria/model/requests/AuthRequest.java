@@ -1,4 +1,4 @@
-package com.demo.mi_cafeteria.model;
+package com.demo.mi_cafeteria.model.requests;
 
 public class AuthRequest {
     private String nickName;
