@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 public interface UsuarioPWDRepository extends JpaRepository<UsuarioPWD,Integer> {
 
 
-    @Query(value = "select up from usuarios_pwd up where up.NICKNAME=:nickname")
+    @Query(value = "select * from usuarios_pwd up where up.NICKNAME=:nickname", nativeQuery = true)
     public UsuarioPWD getUserByNickname(@Param("nickname") String nickname);
 }
