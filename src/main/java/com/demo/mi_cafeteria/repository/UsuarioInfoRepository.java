@@ -1,6 +1,6 @@
 package com.demo.mi_cafeteria.repository;
 
-import com.demo.mi_cafeteria.model.UsuarioInfo;
+import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

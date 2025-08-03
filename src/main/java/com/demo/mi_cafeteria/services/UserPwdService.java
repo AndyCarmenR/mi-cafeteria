@@ -1,6 +1,8 @@
 package com.demo.mi_cafeteria.services;
 
-import com.demo.mi_cafeteria.model.*;
+import com.demo.mi_cafeteria.model.entity.Login;
+import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
+import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
 import com.demo.mi_cafeteria.model.responses.AuthResponse;
 import com.demo.mi_cafeteria.repository.LoginRepository;
 import com.demo.mi_cafeteria.repository.UsuarioPWDRepository;

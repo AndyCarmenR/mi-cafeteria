@@ -1,6 +1,6 @@
 package com.demo.mi_cafeteria.model.responses;
 
-import com.demo.mi_cafeteria.model.Roles;
+import com.demo.mi_cafeteria.model.entity.Roles;
 
 public class CreateRoleResponse {
     private Roles rol;

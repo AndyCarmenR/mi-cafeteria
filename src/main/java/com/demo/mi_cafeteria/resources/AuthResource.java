@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.demo.mi_cafeteria.utils.Constants.DIRECCION_RAIZ;
 
 @RestController
-@RequestMapping(DIRECCION_RAIZ+"auth")
+@RequestMapping("/api/auth")
 public class AuthResource {
     @Autowired
     private CreateNewUserService createNewUserService;

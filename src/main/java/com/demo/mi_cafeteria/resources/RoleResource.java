@@ -1,6 +1,6 @@
 package com.demo.mi_cafeteria.resources;
 
-import com.demo.mi_cafeteria.model.Roles;
+import com.demo.mi_cafeteria.model.entity.Roles;
 import com.demo.mi_cafeteria.model.requests.CreateRoleRequest;
 import com.demo.mi_cafeteria.model.responses.CreateRoleResponse;
 import com.demo.mi_cafeteria.services.RolService;

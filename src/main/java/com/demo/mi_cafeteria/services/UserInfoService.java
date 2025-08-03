@@ -1,7 +1,7 @@
 package com.demo.mi_cafeteria.services;
 
 import com.demo.mi_cafeteria.model.responses.AuthResponse;
-import com.demo.mi_cafeteria.model.UsuarioInfo;
+import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
 import com.demo.mi_cafeteria.repository.UsuarioInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
