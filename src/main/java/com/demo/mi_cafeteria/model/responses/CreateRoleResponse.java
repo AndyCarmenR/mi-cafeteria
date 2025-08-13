@@ -1,16 +1,16 @@
 package com.demo.mi_cafeteria.model.responses;
 
-import com.demo.mi_cafeteria.model.entity.Roles;
+import com.demo.mi_cafeteria.model.dto.RolDto;
 
 public class CreateRoleResponse {
-    private Roles rol;
+    private RolDto rol;
     private String mensaje;
 
-    public Roles getRol() {
+    public RolDto getRol() {
         return rol;
     }
 
-    public void setRol(Roles rol) {
+    public void setRol(RolDto rol) {
         this.rol = rol;
     }
 

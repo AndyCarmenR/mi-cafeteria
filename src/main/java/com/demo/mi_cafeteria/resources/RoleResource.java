@@ -1,9 +1,12 @@
 package com.demo.mi_cafeteria.resources;
 
-import com.demo.mi_cafeteria.model.entity.Roles;
+import com.demo.mi_cafeteria.model.dto.RolDto;
+import com.demo.mi_cafeteria.model.entity.Role;
+import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
 import com.demo.mi_cafeteria.model.requests.CreateRoleRequest;
 import com.demo.mi_cafeteria.model.responses.CreateRoleResponse;
 import com.demo.mi_cafeteria.services.RolService;
+import com.demo.mi_cafeteria.services.UserPwdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +17,18 @@ import java.util.List;
 import static com.demo.mi_cafeteria.utils.Constants.DIRECCION_RAIZ;
 
 @RestController
-@RequestMapping(DIRECCION_RAIZ+"role")
+@RequestMapping("/api/role")
 public class RoleResource {
 
     @Autowired
     private RolService rolService;
 
+    @Autowired
+    private UserPwdService userPwdService;
+
     @PostMapping("/nuevo")
     public ResponseEntity<CreateRoleResponse> createNewRole(@RequestBody CreateRoleRequest request ){
+        //userPwdService.getAuthenicatedUser();
         CreateRoleResponse response=rolService.createNewRole(request);
         if (response.getRol() == null) {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -30,7 +37,8 @@ public class RoleResource {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Roles>>getallRoles(){
+    public ResponseEntity<List<RolDto>>getallRoles(){
+        //userPwdService.getAuthenicatedUser();
         return new ResponseEntity<>(rolService.getAllRoles(),HttpStatus.OK);
     }
 }

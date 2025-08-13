@@ -39,10 +39,10 @@ public class UsuarioInfo {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_usuarios", // tabla intermedia
-            joinColumns = @JoinColumn(name = "USUARIO_INFO_ID"),
+            joinColumns = @JoinColumn(name = "USUARIO_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROL_ID")
     )
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     public Integer getUsuarioInfoId() {
         return usuarioInfoId;
@@ -84,11 +84,11 @@ public class UsuarioInfo {
         this.email = email;
     }
 
-    public Set<Roles> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }
