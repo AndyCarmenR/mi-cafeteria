@@ -2,6 +2,8 @@ package com.demo.mi_cafeteria.model.dto;
 
 import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
 
+import java.util.List;
+
 public class UsuarioDto {
 
     private Integer usuarioInfoId;
@@ -9,6 +11,7 @@ public class UsuarioDto {
     private String apellidoPaternoUsuario;
     private String apellidoMaternoUsuario;
     private String email;
+    private List<RolDto> roles;
 
     public UsuarioDto(UsuarioInfo usuarioInfo) {
         this.usuarioInfoId= usuarioInfo.getUsuarioInfoId();
@@ -51,12 +54,19 @@ public class UsuarioDto {
     public void setApellidoMaternoUsuario(String apellidoMaternoUsuario) {
         this.apellidoMaternoUsuario = apellidoMaternoUsuario;
     }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<RolDto> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RolDto> roles) {
+        this.roles = roles;
     }
 }

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "roles")
-public class Roles {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +53,6 @@ public class Roles {
     public void setUsuarios(Set<UsuarioInfo> usuarios) {
         this.usuarios = usuarios;
     }
+
+
 }

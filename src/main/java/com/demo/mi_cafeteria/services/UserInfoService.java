@@ -1,5 +1,6 @@
 package com.demo.mi_cafeteria.services;
 
+import com.demo.mi_cafeteria.model.requests.RegistryRequest;
 import com.demo.mi_cafeteria.model.responses.AuthResponse;
 import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
 import com.demo.mi_cafeteria.repository.UsuarioInfoRepository;
@@ -15,17 +16,21 @@ public class UserInfoService {
     @Autowired
     private UsuarioInfoRepository userInfoRepository;
 
-    public UsuarioInfo crearInfoUsuario(AuthResponse.RegistryRequest request){
+    public UsuarioInfo crearInfoUsuario(RegistryRequest request){
         if (isNull(request.getNombreUsuario()) || isBlankOrWhiteSpace(request.getNombreUsuario())
         || isNull(request.getApPaternoUsuario()) || isBlankOrWhiteSpace(request.getApPaternoUsuario())
         || isNull(request.getEmailUsuario()) || isBlankOrWhiteSpace(request.getEmailUsuario())){
             return null;
         }
-        UsuarioInfo usuarioInfo=new UsuarioInfo();
-        usuarioInfo.setNombreUsuario(request.getNombreUsuario());
-        usuarioInfo.setApellidoPaternoUsuario(request.getApPaternoUsuario());
-        usuarioInfo.setEmail(request.getEmailUsuario());
-        return userInfoRepository.save(usuarioInfo);
+        UsuarioInfo usuarioInfo=userInfoRepository.getUserByEmail(request.getEmailUsuario());
+        if (usuarioInfo == null) {
+            usuarioInfo=new UsuarioInfo();
+            usuarioInfo.setNombreUsuario(request.getNombreUsuario());
+            usuarioInfo.setApellidoPaternoUsuario(request.getApPaternoUsuario());
+            usuarioInfo.setEmail(request.getEmailUsuario());
+            return userInfoRepository.save(usuarioInfo);
+        }
+        return usuarioInfo;
     }
 
 }
