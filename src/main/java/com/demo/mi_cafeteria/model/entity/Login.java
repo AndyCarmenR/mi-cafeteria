@@ -2,6 +2,8 @@ package com.demo.mi_cafeteria.model.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity(name = "login")
 public class Login {
 
@@ -26,6 +28,9 @@ public class Login {
     @Column(name = "TOKEN")
     private String token;
 
+    @Column(name = "FECHA_LOGIN")
+    private LocalDate fechaLogin;
+
     public Integer getLoginID() {
         return loginID;
     }
@@ -48,5 +53,13 @@ public class Login {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public LocalDate getFechaLogin() {
+        return fechaLogin;
+    }
+
+    public void setFechaLogin(LocalDate fechaLogin) {
+        this.fechaLogin = fechaLogin;
     }
 }
