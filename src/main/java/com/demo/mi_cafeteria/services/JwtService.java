@@ -25,7 +25,9 @@ public class JwtService {
     private String secret;
 
     private  Key secretKey;
-    private final Integer expiration=86400000;// 1 día
+
+    @Value("${jwt.expiration.ms}")
+    private Integer expiration;
 
     @PostConstruct
     public void init(){
