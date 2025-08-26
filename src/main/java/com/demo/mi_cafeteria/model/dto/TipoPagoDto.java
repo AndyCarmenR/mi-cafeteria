@@ -37,7 +37,7 @@ public class TipoPagoDto {
         TipoPagoDto tipoPagoDto=new TipoPagoDto();
         tipoPagoDto.setIdTipoPago(tipoPago.getIdTipoPago());
         tipoPagoDto.setTipoPago(tipoPago.getTipoPago());
-        tipoPagoDto.setDescripcion(tipoPagoDto.getDescripcion());
+        tipoPagoDto.setDescripcion(tipoPago.getDescripcionPago());
         return tipoPagoDto;
     }
 }

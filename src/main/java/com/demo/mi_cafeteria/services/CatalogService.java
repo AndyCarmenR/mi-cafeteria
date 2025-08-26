@@ -87,8 +87,8 @@ public class CatalogService {
         }
         catTipoArticulo.setCategoriaArticulo(tipoArticuloDto.getCategoriaArticulo());
         catTipoArticulo.setDescripcionCategoria(tipoArticuloDto.getDescripcionCategoria());
-        tipoArticuloRepository.save(catTipoArticulo);
-        return TipoArticuloDto.convertToDto(catTipoArticulo);
+        CatTipoArticulo articuloSaved=tipoArticuloRepository.save(catTipoArticulo);
+        return TipoArticuloDto.convertToDto(articuloSaved);
     }
     public ArticuloVentaDto saveArticuloVenta(ArticuloVentaDto articuloVentaDto) throws BadRequestException {
         CatArticulosVenta catArticulosVenta=new CatArticulosVenta();

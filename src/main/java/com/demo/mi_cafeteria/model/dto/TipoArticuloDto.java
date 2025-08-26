@@ -34,7 +34,7 @@ public class TipoArticuloDto {
 
     public static TipoArticuloDto convertToDto(CatTipoArticulo tipoArticulo){
         TipoArticuloDto tipoArticuloDto = new TipoArticuloDto();
-        tipoArticuloDto.setIdTipoArticulo(tipoArticuloDto.getIdTipoArticulo());
+        tipoArticuloDto.setIdTipoArticulo(tipoArticulo.getIdTipoArticulo());
         tipoArticuloDto.setCategoriaArticulo(tipoArticulo.getCategoriaArticulo());
         tipoArticuloDto.setDescripcionCategoria(tipoArticulo.getDescripcionCategoria());
         return tipoArticuloDto;
