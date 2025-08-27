@@ -1,24 +1,16 @@
 package com.demo.mi_cafeteria.services;
 
-import com.demo.mi_cafeteria.model.dto.ArticuloVentaDto;
-import com.demo.mi_cafeteria.model.dto.TipoArticuloDto;
-import com.demo.mi_cafeteria.model.dto.TipoPagoDto;
-import com.demo.mi_cafeteria.model.entity.CatArticulosVenta;
-import com.demo.mi_cafeteria.model.entity.CatTipoArticulo;
-import com.demo.mi_cafeteria.model.entity.CatTipoPago;
-import com.demo.mi_cafeteria.repository.CatArticulosVentaRepository;
-import com.demo.mi_cafeteria.repository.CatTipoArticuloRepository;
-import com.demo.mi_cafeteria.repository.CatTipoPagoRepository;
+import com.demo.mi_cafeteria.model.dto.*;
+import com.demo.mi_cafeteria.model.entity.*;
+import com.demo.mi_cafeteria.repository.*;
 import com.demo.mi_cafeteria.utils.BadRequestException;
 import com.demo.mi_cafeteria.utils.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CatalogService {
@@ -31,6 +23,12 @@ public class CatalogService {
 
     @Autowired
     private CatTipoArticuloRepository tipoArticuloRepository;
+
+    @Autowired
+    private DescuentoArticuloRepository descuentoArticuloRepository;
+
+    @Autowired
+    private CatExtrasRepository extrasRepository;
 
     public List<TipoPagoDto> getAllTipoPago(){
         List<CatTipoPago> catTipoPagoList=tipoPagoRepository.findAll();
@@ -106,5 +104,54 @@ public class CatalogService {
         articulosVentaRepository.save(catArticulosVenta);
 
         return ArticuloVentaDto.convertToArticuloVentaDto(catArticulosVenta);
+    }
+
+    public List<DescuentoArticuloDto> getAllDescuentoArticulo(){
+        List<DescuentoArticuloDto>descuentos=new ArrayList<>();
+        List<DescuentoArticulo>descuentosList=descuentoArticuloRepository.findAll();
+        if (descuentosList.isEmpty()) {
+            throw new NotFoundException("Aun no hay un catalogo registrado");
+        }
+        for (DescuentoArticulo descuento:descuentosList){
+            descuentos.add(DescuentoArticuloDto.convertToDto(descuento));
+        }
+        return descuentos;
+    }
+    public DescuentoArticuloDto saveDescuento(DescuentoArticuloDto descuento){
+        if (descuento.getDescuentoPorcentaje() == null ||descuento.getNombreDescuento().isEmpty()|| descuento.getDescripcion().isEmpty()) {
+            throw new BadRequestException("parametros insuficientes");
+        }
+        DescuentoArticulo descuentoArticulo=new DescuentoArticulo();
+        descuentoArticulo.setDescuentoPorcentaje(descuento.getDescuentoPorcentaje());
+        descuentoArticulo.setNombreDescuento(descuento.getNombreDescuento());
+        descuentoArticulo.setDescripcion(descuento.getDescripcion());
+
+        descuentoArticuloRepository.save(descuentoArticulo);
+        return DescuentoArticuloDto.convertToDto(descuentoArticulo);
+    }
+
+
+    public List<ExtrasDto> getAllExtras(){
+        List<ExtrasDto> extras =new ArrayList<>();
+        List<CatExtras> extrasList =extrasRepository.findAll();
+        if (extrasList.isEmpty()) {
+            throw new NotFoundException("Aun no hay un catalogo registrado");
+        }
+        for (CatExtras catExtra: extrasList){
+            extras.add(ExtrasDto.convertToDto(catExtra));
+        }
+        return extras;
+    }
+    public ExtrasDto saveExtra(ExtrasDto extra){
+        if (extra.getDescripcion().isEmpty() ||extra.getNombreExtra().isEmpty()|| extra.getPrecioExtra()==null) {
+            throw new BadRequestException("parametros insuficientes");
+        }
+        CatExtras catExtras=new CatExtras();
+        catExtras.setNombreExtra(extra.getNombreExtra());
+        catExtras.setDescripcion(extra.getDescripcion());
+        catExtras.setPrecioExtra(extra.getPrecioExtra());
+
+        extrasRepository.save(catExtras);
+        return ExtrasDto.convertToDto(catExtras);
     }
 }
