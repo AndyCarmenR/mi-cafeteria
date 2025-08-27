@@ -1,7 +1,10 @@
 package com.demo.mi_cafeteria.model.dto;
+import com.demo.mi_cafeteria.model.entity.CatExtras;
 import com.demo.mi_cafeteria.model.entity.DetalleTicket;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetalleTicketDto {
 
@@ -10,6 +13,8 @@ public class DetalleTicketDto {
     private Integer idTicketVenta;
     private Integer cantidadArticulos;
     private BigDecimal totalVenta;
+    private List<ExtrasDto> extras;
+    private DescuentoArticuloDto descuento;
 
     public Integer getIdDetalleTicket() {
         return idDetalleTicket;
@@ -50,6 +55,23 @@ public class DetalleTicketDto {
     public void setTotalVenta(BigDecimal totalVenta) {
         this.totalVenta = totalVenta;
     }
+
+    public List<ExtrasDto> getExtras() {
+        return extras;
+    }
+
+    public void setExtras(List<ExtrasDto> extras) {
+        this.extras = extras;
+    }
+
+    public DescuentoArticuloDto getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(DescuentoArticuloDto descuento) {
+        this.descuento = descuento;
+    }
+
     public static DetalleTicketDto convertToDetalleTicketDto(DetalleTicket detalleTicket){
         DetalleTicketDto detalleTicketDto=new DetalleTicketDto();
         detalleTicketDto.setIdDetalleTicket(detalleTicket.getIdDetalleTicket());
@@ -57,6 +79,12 @@ public class DetalleTicketDto {
         detalleTicketDto.setTicketVenta(detalleTicket.getTicketVenta().getIdTicket());
         detalleTicketDto.setCantidadArticulos(detalleTicket.getCantidadArticulos());
         detalleTicketDto.setTotalVenta(detalleTicket.getTotalVenta());
+        List<ExtrasDto>extrasDtos =new ArrayList<>();
+        for (CatExtras extras: detalleTicket.getExtras()){
+            extrasDtos.add(ExtrasDto.convertToDto(extras));
+        }
+        detalleTicketDto.setExtras(extrasDtos);
+        detalleTicketDto.setDescuento(DescuentoArticuloDto.convertToDto(detalleTicket.getDescuentoArticulo()));
 
         return detalleTicketDto;
     }

@@ -3,6 +3,8 @@ package com.demo.mi_cafeteria.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "DETALLE_TICKET")
 public class DetalleTicket {
@@ -25,6 +27,19 @@ public class DetalleTicket {
 
     @Column(name = "TOTAL_VENTA",precision = 10, scale = 2)
     private BigDecimal totalVenta;
+
+    @ManyToMany
+    @JoinTable(
+            name = "DETALLE_TICKET_EXTRAS", // tabla intermedia
+            joinColumns = @JoinColumn(name = "ID_DETALLE_TICKET"),
+            inverseJoinColumns = @JoinColumn(name = "ID_EXTRA")
+    )
+    private List<CatExtras> extras=new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "ID_DESCUENTO")
+    private DescuentoArticulo descuentoArticulo;
+
 
     public Integer getIdDetalleTicket() {
         return idDetalleTicket;
@@ -64,5 +79,21 @@ public class DetalleTicket {
 
     public void setTotalVenta(BigDecimal totalVenta) {
         this.totalVenta = totalVenta;
+    }
+
+    public List<CatExtras> getExtras() {
+        return extras;
+    }
+
+    public void setExtras(List<CatExtras> extras) {
+        this.extras = extras;
+    }
+
+    public DescuentoArticulo getDescuentoArticulo() {
+        return descuentoArticulo;
+    }
+
+    public void setDescuentoArticulo(DescuentoArticulo descuentoArticulo) {
+        this.descuentoArticulo = descuentoArticulo;
     }
 }
