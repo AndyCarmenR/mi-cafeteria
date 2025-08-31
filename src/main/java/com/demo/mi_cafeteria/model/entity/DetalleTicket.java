@@ -14,7 +14,7 @@ public class DetalleTicket {
     @Column(name = "ID_DETALLE_TICKET")
     private Integer idDetalleTicket;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "ID_ARTICULO_VENTA")
     private CatArticulosVenta articuloVenta;
 
@@ -39,6 +39,10 @@ public class DetalleTicket {
     @OneToOne
     @JoinColumn(name = "ID_DESCUENTO")
     private DescuentoArticulo descuentoArticulo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_PAQUETE")
+    private Paquete paquete;
 
 
     public Integer getIdDetalleTicket() {
@@ -95,5 +99,13 @@ public class DetalleTicket {
 
     public void setDescuentoArticulo(DescuentoArticulo descuentoArticulo) {
         this.descuentoArticulo = descuentoArticulo;
+    }
+
+    public Paquete getPaquete() {
+        return paquete;
+    }
+
+    public void setPaquete(Paquete paquete) {
+        this.paquete = paquete;
     }
 }
