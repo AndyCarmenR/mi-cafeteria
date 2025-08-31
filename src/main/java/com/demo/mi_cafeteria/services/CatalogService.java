@@ -9,8 +9,10 @@ import com.demo.mi_cafeteria.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CatalogService {
@@ -29,6 +31,12 @@ public class CatalogService {
 
     @Autowired
     private CatExtrasRepository extrasRepository;
+
+    @Autowired
+    private PaqueteRepository paqueteRepository;
+
+    @Autowired
+    private DetallePaqueteRepository detallePaqueteRepository;
 
     public List<TipoPagoDto> getAllTipoPago(){
         List<CatTipoPago> catTipoPagoList=tipoPagoRepository.findAll();
@@ -153,5 +161,55 @@ public class CatalogService {
 
         extrasRepository.save(catExtras);
         return ExtrasDto.convertToDto(catExtras);
+    }
+
+    public CatTipoPago getTipoPagoById(Integer id){
+        return tipoPagoRepository.findById(id).orElseThrow(()-> new NotFoundException("No hemos encontrado el tipo de pago que buscas"));
+    }
+
+
+    public List<PaqueteDto>getAllPaquetes(){
+        List<PaqueteDto>dtoList=new ArrayList<>();
+        List<Paquete>paquetes=paqueteRepository.findAll();
+        if (paquetes.isEmpty()){
+            throw new NotFoundException("Aun no hay paquetes registrados");
+        }
+        for (Paquete paquete:paquetes){
+            dtoList.add(PaqueteDto.convertToDto(paquete));
+        }
+        return dtoList;
+    }
+
+    public PaqueteDto saveNewPaquete(PaqueteDto paqueteDto){
+        if (paqueteDto.getNombrePaquete().isEmpty()
+                || paqueteDto.getDescripcion().isEmpty()
+                || paqueteDto.getPrecio().equals(BigDecimal.ZERO)
+                || paqueteDto.getDetalles().isEmpty()){
+            throw new BadRequestException("parametros insuficientes");
+        }
+        Paquete paquete=new Paquete();
+        paquete.setNombrePaquete(paqueteDto.getNombrePaquete());
+        paquete.setDescripcion(paqueteDto.getDescripcion());
+        paquete.setPrecio(paqueteDto.getPrecio());
+        addDetallestoPaquete(paqueteDto.getDetalles(),paquete);
+        paqueteRepository.save(paquete);
+        return PaqueteDto.convertToDto(paquete);
+    }
+
+    private void addDetallestoPaquete(List<DetallePaqueteDto> detallesDto, Paquete paquete){
+        for (DetallePaqueteDto dto:detallesDto){
+            DetallePaquete detallePaquete=new DetallePaquete();
+            Optional<CatArticulosVenta> optArticulo=articulosVentaRepository.findById(dto.getArticulo().getIdArticuloVenta());
+            if (optArticulo.isEmpty()){
+                throw new NotFoundException("articulo no encontrado");
+            }
+            detallePaquete.setPaquete(paquete);
+            detallePaquete.setArticulo(optArticulo.get());
+            detallePaquete.setCantidad(dto.getCantidad());
+            paquete.addDetalle(detallePaquete);
+        }
+    }
+    public Paquete getPaqueteById(Integer id){
+        return paqueteRepository.findById(id).orElseThrow(()-> new NotFoundException("No hemos encontrado el tipo de pago que buscas"));
     }
 }

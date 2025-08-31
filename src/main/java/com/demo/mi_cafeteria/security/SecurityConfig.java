@@ -107,6 +107,7 @@ public class SecurityConfig {
                         // Protected endpoints - JWT authentication required
                         .requestMatchers("/api/role/**").authenticated()
                         .requestMatchers("/api/catalog/**").authenticated()
+                        .requestMatchers("/api/tickets/**").authenticated()
                         // All other requests require authentication
                         .anyRequest().authenticated()
                 )
