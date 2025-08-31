@@ -15,6 +15,7 @@ public class DetalleTicketDto {
     private BigDecimal totalVenta;
     private List<ExtrasDto> extras;
     private DescuentoArticuloDto descuento;
+    private PaqueteDto paquete;
 
     public Integer getIdDetalleTicket() {
         return idDetalleTicket;
@@ -72,6 +73,14 @@ public class DetalleTicketDto {
         this.descuento = descuento;
     }
 
+    public PaqueteDto getPaquete() {
+        return paquete;
+    }
+
+    public void setPaquete(PaqueteDto paquete) {
+        this.paquete = paquete;
+    }
+
     public static DetalleTicketDto convertToDetalleTicketDto(DetalleTicket detalleTicket){
         DetalleTicketDto detalleTicketDto=new DetalleTicketDto();
         detalleTicketDto.setIdDetalleTicket(detalleTicket.getIdDetalleTicket());
@@ -85,7 +94,7 @@ public class DetalleTicketDto {
         }
         detalleTicketDto.setExtras(extrasDtos);
         detalleTicketDto.setDescuento(DescuentoArticuloDto.convertToDto(detalleTicket.getDescuentoArticulo()));
-
+        detalleTicketDto.setPaquete(PaqueteDto.convertToDto(detalleTicket.getPaquete()));
         return detalleTicketDto;
     }
 }
