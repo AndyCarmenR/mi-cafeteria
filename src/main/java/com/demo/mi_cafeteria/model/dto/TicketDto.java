@@ -1,10 +1,7 @@
 package com.demo.mi_cafeteria.model.dto;
 
-import com.demo.mi_cafeteria.model.entity.CatTipoPago;
 import com.demo.mi_cafeteria.model.entity.DetalleTicket;
 import com.demo.mi_cafeteria.model.entity.TicketVenta;
-import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
-import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

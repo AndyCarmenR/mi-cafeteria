@@ -1,8 +1,6 @@
 package com.demo.mi_cafeteria.resources;
 
 import com.demo.mi_cafeteria.model.dto.RolDto;
-import com.demo.mi_cafeteria.model.entity.Role;
-import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
 import com.demo.mi_cafeteria.model.requests.CreateRoleRequest;
 import com.demo.mi_cafeteria.model.responses.CreateRoleResponse;
 import com.demo.mi_cafeteria.services.RolService;
@@ -13,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.demo.mi_cafeteria.utils.Constants.DIRECCION_RAIZ;
 
 @RestController
 @RequestMapping("/api/role")

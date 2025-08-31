@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "TICKET_VENTA")
 public class TicketVenta {
@@ -29,7 +30,7 @@ public class TicketVenta {
     private CatTipoPago tipoPago;
 
     @OneToMany(mappedBy = "ticketVenta", cascade = CascadeType.ALL,orphanRemoval = true)
-    private ArrayList<DetalleTicket> detalles=new ArrayList<>();
+    private List<DetalleTicket> detalles=new ArrayList<>();
 
     @Column(name = "SUBTOTAL", precision = 10,scale = 2)
     private BigDecimal subtotal;
@@ -126,11 +127,11 @@ public class TicketVenta {
         this.activo = activo;
     }
 
-    public ArrayList<DetalleTicket> getDetalles() {
+    public List<DetalleTicket> getDetalles() {
         return detalles;
     }
 
-    public void setDetalles(ArrayList<DetalleTicket> detalles) {
+    public void setDetalles(List<DetalleTicket> detalles) {
         this.detalles = detalles;
     }
 
