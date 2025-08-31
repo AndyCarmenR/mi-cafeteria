@@ -1,8 +1,6 @@
 package com.demo.mi_cafeteria.model.responses;
 
 import com.demo.mi_cafeteria.model.dto.UsuarioDto;
-import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
-import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
 
 public class RegistryResponse {
     private UsuarioDto usuarioInfo;
