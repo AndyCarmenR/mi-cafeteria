@@ -2,8 +2,6 @@ package com.demo.mi_cafeteria.model.dto;
 
 import com.demo.mi_cafeteria.model.entity.CatTipoPago;
 
-import javax.swing.*;
-
 public class TipoPagoDto {
     private Integer idTipoPago;
     private String tipoPago;

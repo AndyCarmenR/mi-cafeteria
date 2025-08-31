@@ -1,7 +1,6 @@
 package com.demo.mi_cafeteria.model.dto;
 
 import com.demo.mi_cafeteria.model.entity.CatTipoArticulo;
-import jakarta.persistence.Column;
 
 public class TipoArticuloDto {
     private Integer idTipoArticulo;
