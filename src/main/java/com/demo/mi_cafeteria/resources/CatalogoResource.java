@@ -1,10 +1,7 @@
 package com.demo.mi_cafeteria.resources;
 
 import com.demo.mi_cafeteria.model.dto.*;
-import com.demo.mi_cafeteria.model.entity.DescuentoArticulo;
 import com.demo.mi_cafeteria.services.CatalogService;
-import com.demo.mi_cafeteria.utils.BadRequestException;
-import com.demo.mi_cafeteria.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +62,14 @@ public class CatalogoResource {
     @GetMapping("/extras")
     public ResponseEntity<List<ExtrasDto>>getAllExtras(){
         return ResponseEntity.ok(catalogService.getAllExtras());
+    }
+
+    @GetMapping("/paquetes")
+    public ResponseEntity<List<PaqueteDto>> getAllPaquetes(){
+        return ResponseEntity.ok(catalogService.getAllPaquetes());
+    }
+    @PostMapping("/paquetes")
+    public ResponseEntity<PaqueteDto>saveNewPaquete(@RequestBody PaqueteDto paqueteDto){
+        return ResponseEntity.ok(catalogService.saveNewPaquete(paqueteDto));
     }
 }

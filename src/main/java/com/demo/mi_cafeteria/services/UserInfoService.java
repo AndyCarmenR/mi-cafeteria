@@ -1,8 +1,7 @@
 package com.demo.mi_cafeteria.services;
 
-import com.demo.mi_cafeteria.model.requests.RegistryRequest;
-import com.demo.mi_cafeteria.model.responses.AuthResponse;
 import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
+import com.demo.mi_cafeteria.model.requests.RegistryRequest;
 import com.demo.mi_cafeteria.repository.UsuarioInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,18 +1,14 @@
 package com.demo.mi_cafeteria.resources;
 
-import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
 import com.demo.mi_cafeteria.model.requests.AuthRequest;
 import com.demo.mi_cafeteria.model.requests.RegistryRequest;
 import com.demo.mi_cafeteria.model.responses.AuthResponse;
 import com.demo.mi_cafeteria.model.responses.RegistryResponse;
 import com.demo.mi_cafeteria.services.CreateNewUserService;
 import com.demo.mi_cafeteria.services.UserPwdService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

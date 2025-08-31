@@ -7,21 +7,15 @@ import com.demo.mi_cafeteria.model.requests.RegistryRequest;
 import com.demo.mi_cafeteria.repository.LoginRepository;
 import com.demo.mi_cafeteria.repository.UsuarioPWDRepository;
 import com.demo.mi_cafeteria.utils.Constants;
-import com.demo.mi_cafeteria.utils.NotFoundException;
 import com.demo.mi_cafeteria.utils.NullOrWhiteSpaceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 @Service
