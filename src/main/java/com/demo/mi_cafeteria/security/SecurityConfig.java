@@ -1,4 +1,5 @@
 package com.demo.mi_cafeteria.security;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -119,7 +120,10 @@ public class SecurityConfig {
                 // Disable frame options for H2 console (development only)
                 .headers(headers ->
                         headers.contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors 'self'"))
-                );
+                ).exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No autorizado");
+                });
 
         return http.build();
     }

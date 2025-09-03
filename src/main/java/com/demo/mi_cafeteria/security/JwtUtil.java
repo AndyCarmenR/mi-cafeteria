@@ -1,9 +1,13 @@
 package com.demo.mi_cafeteria.security;
 
+import com.demo.mi_cafeteria.services.UserDetailsServiceImpl;
+import com.demo.mi_cafeteria.utils.NotFoundException;
+import com.demo.mi_cafeteria.utils.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +29,9 @@ public class JwtUtil {
     // The expiration time for JWTs in milliseconds.
     @Value("${jwt.expiration.ms}")
     private long jwtExpirationMs;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     /**
      * Retrieves the signing key for JWTs.
@@ -101,7 +108,7 @@ public class JwtUtil {
      * @throws SignatureException        if the token's signature is invalid.
      * @throws IllegalArgumentException  if the token is null or empty.
      */
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) throws UnauthorizedException {
         // This is where JWT parsing and basic validation (signature, malformation) happen.
         // Exceptions from here will be caught and re-thrown by public validateToken(String)
         return Jwts.parser()
@@ -176,12 +183,18 @@ public class JwtUtil {
      * Used typically by Spring Security filters to validate a token against a loaded user.
      *
      * @param token       The JWT token.
-     * @param userDetails The `UserDetails` object to validate against.
      * @return True if the token is valid for the given user, false otherwise.
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token) {
+
+
         final String username = extractUsername(token); // This extract will implicitly validate structure/signature/expiration
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            // Attempt to parse claims. This method inherently verifies signature and expiration.
+            // If validation fails, it throws specific JWT exceptions.
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        extractAllClaims(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)); // If no exception is thrown, the token is valid.
+
         // Note: The extractUsername call (via extractAllClaims) will throw exceptions
         // if the token is invalid or expired. So, the !isTokenExpired(token) check here
         // might be redundant if extractUsername already handles expiration via Jwts.parserBuilder.
@@ -202,7 +215,7 @@ public class JwtUtil {
      * @throws ExpiredJwtException       if the token has expired.
      * @throws RuntimeException          for any other unexpected parsing/validation errors.
      */
-    public Boolean validateToken(String token) {
+    /*public Boolean validateToken(String token) {
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("JWT token cannot be null or empty.");
         }
@@ -220,7 +233,7 @@ public class JwtUtil {
             // Catch any other unexpected exceptions from the JWT library
             throw new RuntimeException("Unexpected error during JWT validation: " + e.getMessage(), e);
         }
-    }
+    }*/
 
     /**
      * Extracts the userId from a JWT token's claims.
