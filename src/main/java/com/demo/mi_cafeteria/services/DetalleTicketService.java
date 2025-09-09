@@ -1,5 +1,6 @@
 package com.demo.mi_cafeteria.services;
 
+import com.demo.mi_cafeteria.model.dto.DescuentoArticuloDto;
 import com.demo.mi_cafeteria.model.dto.DetalleTicketDto;
 import com.demo.mi_cafeteria.model.dto.ExtrasDto;
 import com.demo.mi_cafeteria.model.dto.TicketDto;
@@ -40,28 +41,28 @@ public class DetalleTicketService {
         for (DetalleTicketDto dto:ticketDto.getDetalles()){
             DetalleTicket dt=new DetalleTicket();
             dt.setTicketVenta(ticket);
-            Optional<CatArticulosVenta> avo;
+            Optional<CatArticulosVenta> avo=Optional.empty();
+            Boolean isArticulo=Boolean.TRUE;
             try {
                 avo=articulosVentaRepo.findById(dto.getArticuloVenta().getIdArticuloVenta());
             } catch (Exception e) {
-                throw new BadRequestException(e.getMessage());
-            }
-            if (avo.isEmpty()) {
+                isArticulo=Boolean.FALSE;
                 Paquete paquete=catalogService.getPaqueteById(dto.getPaquete().getIdPaquete());
                 if (paquete == null) {
                     throw new NotFoundException("El articulo o paquete que estas buscando no existe, por favor revisa tus parametros");
                 }
                 dt.setPaquete(paquete);
-            }else {
-                dt.setArticuloVenta(avo.get());
             }
-            Optional<DescuentoArticulo> descOpt;
-            try {
+            avo.ifPresent(dt::setArticuloVenta);
+
+
+            Optional<DescuentoArticulo> descOpt = Optional.empty();
+            DescuentoArticuloDto desc=dto.getDescuento();
+            if (desc!=null) {
                 descOpt=descuentoArticuloRepo.findById(dto.getDescuento().getIdDescuento());
-            } catch (Exception e) {
-                throw new BadRequestException(e.getMessage());
             }
             descOpt.ifPresent(dt::setDescuentoArticulo);
+
             for (ExtrasDto e: dto.getExtras()){
                 Optional<CatExtras>extrasOptional;
                 try {
@@ -73,33 +74,43 @@ public class DetalleTicketService {
             }
             dt.setExtras(extrasList);
             dt.setCantidadArticulos(dto.getCantidadArticulos());
-            dt.setTotalVenta(calcularTotal(dt));
+            if (isArticulo.equals(Boolean.TRUE)) {
+                dt.setTotalVenta(calcularTotalArticulos(dt));
+            }else {
+                dt.setTotalVenta(calcularTotalPaquete(dt));
+            }
+            detalles.add(dt);
         }
         detalleticketRepository.saveAll(detalles);
 
         return detalles;
     }
 
+
     public DetalleTicket addNewDetalleToTicket(DetalleTicketDto dto,TicketVenta ticket){
         DetalleTicket dt=new DetalleTicket();
         dt.setTicketVenta(ticket);
-        Optional<CatArticulosVenta> avo;
+        Optional<CatArticulosVenta> avo=Optional.empty();
+        Boolean isArticulo=Boolean.TRUE;
         try {
             avo=articulosVentaRepo.findById(dto.getArticuloVenta().getIdArticuloVenta());
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            isArticulo=Boolean.FALSE;
+            Paquete paquete=catalogService.getPaqueteById(dto.getPaquete().getIdPaquete());
+            if (paquete == null) {
+                throw new NotFoundException("El articulo o paquete que estas buscando no existe, por favor revisa tus parametros");
+            }
+            dt.setPaquete(paquete);
         }
-        if (avo.isEmpty()) {
-            throw new NotFoundException("El articulo que estas buscando no existe, por favor revisa tus parametros");
-        }
-        dt.setArticuloVenta(avo.get());
-        Optional<DescuentoArticulo> descOpt;
-        try {
+        avo.ifPresent(dt::setArticuloVenta);
+
+        Optional<DescuentoArticulo> descOpt = Optional.empty();
+        DescuentoArticuloDto desc=dto.getDescuento();
+        if (desc!=null) {
             descOpt=descuentoArticuloRepo.findById(dto.getDescuento().getIdDescuento());
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
         }
         descOpt.ifPresent(dt::setDescuentoArticulo);
+
         List<CatExtras> extrasList=new ArrayList<>();
         for (ExtrasDto e: dto.getExtras()) {
             Optional<CatExtras> extrasOptional;
@@ -112,19 +123,40 @@ public class DetalleTicketService {
         }
         dt.setExtras(extrasList);
         dt.setCantidadArticulos(dto.getCantidadArticulos());
-        dt.setTotalVenta(calcularTotal(dt));
+        if (isArticulo.equals(Boolean.TRUE)) {
+            dt.setTotalVenta(calcularTotalArticulos(dt));
+        }else {
+            dt.setTotalVenta(calcularTotalPaquete(dt));
+        }
+        detalleticketRepository.save(dt);
         return dt;
     }
 
-    private BigDecimal calcularTotal(DetalleTicket dt){
+    private BigDecimal calcularTotalArticulos(DetalleTicket dt){
+
         BigDecimal total=BigDecimal.valueOf((long) dt.getArticuloVenta().getPrecioArticulo().intValue() * dt.getCantidadArticulos());
         BigDecimal totalExtras=BigDecimal.ZERO;
         for(CatExtras extra:dt.getExtras()){
             totalExtras=totalExtras.add(extra.getPrecioExtra());
         }
-        total=total.add(totalExtras);
+
         BigDecimal descuento=BigDecimal.ZERO;
-        if (dt.getDescuentoArticulo() == null) {
+        if (dt.getDescuentoArticulo() != null) {
+
+            descuento=total.multiply((dt.getDescuentoArticulo().getDescuentoPorcentaje().divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
+        }
+        total=total.subtract(descuento);
+        return total;
+    }
+    private BigDecimal calcularTotalPaquete(DetalleTicket dt){
+        BigDecimal total=dt.getPaquete().getPrecio();
+        BigDecimal totalExtras=BigDecimal.ZERO;
+        total=total.add(totalExtras);
+        for(CatExtras extra:dt.getExtras()){
+            totalExtras=totalExtras.add(extra.getPrecioExtra());
+        }
+        BigDecimal descuento=BigDecimal.ZERO;
+        if (dt.getDescuentoArticulo() != null) {
 
             descuento=total.multiply((dt.getDescuentoArticulo().getDescuentoPorcentaje().divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
         }

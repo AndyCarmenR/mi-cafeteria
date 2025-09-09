@@ -116,7 +116,10 @@ public class TicketDto {
         ticketDto.setFechaTicket(ticket.getFechaTicket());
         UsuarioDto usuarioDto=new UsuarioDto(ticket.getUsuarioInfo());
         ticketDto.setUsuarioInfo(usuarioDto);
-        ticketDto.setTipoPago(TipoPagoDto.convertToDto(ticket.getTipoPago()));
+        if (ticket.getTipoPago() != null) {
+            ticketDto.setTipoPago(TipoPagoDto.convertToDto(ticket.getTipoPago()));
+        }
+
 
         ArrayList<DetalleTicketDto>detalleDtoList=new ArrayList<>();
         for (DetalleTicket detalleTicket : ticket.getDetalles()){

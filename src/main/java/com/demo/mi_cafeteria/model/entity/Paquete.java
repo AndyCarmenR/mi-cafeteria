@@ -3,6 +3,7 @@ package com.demo.mi_cafeteria.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Paquete {
     private BigDecimal precio;
 
     @OneToMany(mappedBy = "paquete", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetallePaquete> detalles;
+    private List<DetallePaquete> detalles=new ArrayList<>();
 
     public Integer getIdPaquete() {
         return idDPaquete;

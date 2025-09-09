@@ -2,7 +2,9 @@ package com.demo.mi_cafeteria.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name = "usuarios_info")
@@ -42,7 +44,7 @@ public class UsuarioInfo {
             joinColumns = @JoinColumn(name = "USUARIO_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROL_ID")
     )
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     public Integer getUsuarioInfoId() {
         return usuarioInfoId;
@@ -84,11 +86,11 @@ public class UsuarioInfo {
         this.email = email;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 }

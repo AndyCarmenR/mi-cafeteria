@@ -13,7 +13,7 @@ public class DetalleTicketDto {
     private Integer idTicketVenta;
     private Integer cantidadArticulos;
     private BigDecimal totalVenta;
-    private List<ExtrasDto> extras;
+    private List<ExtrasDto> extras=new ArrayList<>();
     private DescuentoArticuloDto descuento;
     private PaqueteDto paquete;
 
@@ -84,7 +84,9 @@ public class DetalleTicketDto {
     public static DetalleTicketDto convertToDetalleTicketDto(DetalleTicket detalleTicket){
         DetalleTicketDto detalleTicketDto=new DetalleTicketDto();
         detalleTicketDto.setIdDetalleTicket(detalleTicket.getIdDetalleTicket());
-        detalleTicketDto.setArticuloVenta(ArticuloVentaDto.convertToArticuloVentaDto(detalleTicket.getArticuloVenta()));
+        if (detalleTicket.getArticuloVenta()!= null) {
+            detalleTicketDto.setArticuloVenta(ArticuloVentaDto.convertToArticuloVentaDto(detalleTicket.getArticuloVenta()));
+        }
         detalleTicketDto.setTicketVenta(detalleTicket.getTicketVenta().getIdTicket());
         detalleTicketDto.setCantidadArticulos(detalleTicket.getCantidadArticulos());
         detalleTicketDto.setTotalVenta(detalleTicket.getTotalVenta());
@@ -93,8 +95,13 @@ public class DetalleTicketDto {
             extrasDtos.add(ExtrasDto.convertToDto(extras));
         }
         detalleTicketDto.setExtras(extrasDtos);
-        detalleTicketDto.setDescuento(DescuentoArticuloDto.convertToDto(detalleTicket.getDescuentoArticulo()));
-        detalleTicketDto.setPaquete(PaqueteDto.convertToDto(detalleTicket.getPaquete()));
+        if (detalleTicket.getDescuentoArticulo()!=null) {
+            detalleTicketDto.setDescuento(DescuentoArticuloDto.convertToDto(detalleTicket.getDescuentoArticulo()));
+        }
+        if (detalleTicket.getPaquete()!= null) {
+            detalleTicketDto.setPaquete(PaqueteDto.convertToDto(detalleTicket.getPaquete()));
+
+        }
         return detalleTicketDto;
     }
 }

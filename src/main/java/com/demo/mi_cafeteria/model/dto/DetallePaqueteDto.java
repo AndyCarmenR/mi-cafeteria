@@ -5,7 +5,7 @@ import com.demo.mi_cafeteria.model.entity.DetallePaquete;
 public class DetallePaqueteDto {
 
     private Integer idDetallePaquete;
-    private PaqueteDto paquete;
+    private Integer paquete;
     private ArticuloVentaDto articulo;
     private Integer cantidad;
 
@@ -17,11 +17,11 @@ public class DetallePaqueteDto {
         this.idDetallePaquete = idDetallePaquete;
     }
 
-    public PaqueteDto getPaquete() {
+    public Integer getPaquete() {
         return paquete;
     }
 
-    public void setPaquete(PaqueteDto paquete) {
+    public void setPaquete(Integer paquete) {
         this.paquete = paquete;
     }
 
@@ -44,7 +44,7 @@ public class DetallePaqueteDto {
     public static DetallePaqueteDto convertToDto(DetallePaquete detalle){
         DetallePaqueteDto dto=new DetallePaqueteDto();
         dto.setCantidad(detalle.getCantidad());
-        dto.setPaquete(PaqueteDto.convertToDto(detalle.getPaquete()));
+        dto.setPaquete(detalle.getPaquete().getIdPaquete());
         dto.setArticulo(ArticuloVentaDto.convertToArticuloVentaDto(detalle.getArticulo()));
         dto.setIdDetallePaquete(detalle.getIdDetallePaquete());
         return dto;

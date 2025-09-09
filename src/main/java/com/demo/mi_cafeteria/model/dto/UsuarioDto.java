@@ -3,6 +3,7 @@ package com.demo.mi_cafeteria.model.dto;
 import com.demo.mi_cafeteria.model.entity.UsuarioInfo;
 
 import java.util.List;
+import java.util.Set;
 
 public class UsuarioDto {
 
@@ -19,6 +20,7 @@ public class UsuarioDto {
         this.apellidoPaternoUsuario=usuarioInfo.getApellidoPaternoUsuario();
         this.apellidoMaternoUsuario=usuarioInfo.getApellidoMaternoUsuario();
         this.email=usuarioInfo.getEmail();
+        this.roles=RolDto.toListRolDto(usuarioInfo.getRoles());
     }
 
     public UsuarioDto(){}

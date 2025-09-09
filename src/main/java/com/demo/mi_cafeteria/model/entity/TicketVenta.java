@@ -29,7 +29,7 @@ public class TicketVenta {
     @JoinColumn(name = "ID_TIPO_PAGO")
     private CatTipoPago tipoPago;
 
-    @OneToMany(mappedBy = "ticketVenta", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "ticketVenta")
     private List<DetalleTicket> detalles=new ArrayList<>();
 
     @Column(name = "SUBTOTAL", precision = 10,scale = 2)

@@ -2,11 +2,9 @@ package com.demo.mi_cafeteria.services;
 
 import com.demo.mi_cafeteria.model.dto.DetalleTicketDto;
 import com.demo.mi_cafeteria.model.dto.TicketDto;
-import com.demo.mi_cafeteria.model.entity.CatTipoPago;
-import com.demo.mi_cafeteria.model.entity.DetalleTicket;
-import com.demo.mi_cafeteria.model.entity.TicketVenta;
-import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
+import com.demo.mi_cafeteria.model.entity.*;
 import com.demo.mi_cafeteria.repository.TicketVentaRepository;
+import com.demo.mi_cafeteria.repository.UsuarioInfoRepository;
 import com.demo.mi_cafeteria.utils.BadRequestException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class TicketService {
@@ -29,6 +28,9 @@ public class TicketService {
 
     @Autowired
     private CatalogService catalogService;
+
+    @Autowired
+    private UsuarioInfoRepository repository;
 
     private String foilTemplate="TCKT-";
 
@@ -47,8 +49,9 @@ public class TicketService {
         ticketVenta.setUsuarioInfo(usr.getUsuarioInfo());
 
         ticketRepo.save(ticketVenta);
+        List<DetalleTicket>detalle= detalleTicketService.createNewDetalleTicket(ticket, ticketVenta);
+        ticketVenta.setDetalles(detalle);
 
-        ticketVenta.setDetalles(detalleTicketService.createNewDetalleTicket(ticket, ticketVenta));
         ticketVenta.setFolioTicket(createNewTicketFolio(ticketVenta.getIdTicket()));
         ticketVenta.setSubtotal(calcularSubTotal(ticketVenta));
         ticketVenta.setImpuestos(calcularImpuestos(ticketVenta.getSubtotal()));
