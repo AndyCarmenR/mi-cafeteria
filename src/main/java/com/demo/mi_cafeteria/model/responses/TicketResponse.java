@@ -1,5 +1,7 @@
-package com.demo.mi_cafeteria.model.dto;
+package com.demo.mi_cafeteria.model.responses;
 
+import com.demo.mi_cafeteria.model.dto.TipoPagoDto;
+import com.demo.mi_cafeteria.model.dto.UsuarioDto;
 import com.demo.mi_cafeteria.model.entity.DetalleTicket;
 import com.demo.mi_cafeteria.model.entity.TicketVenta;
 
@@ -7,19 +9,39 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class TicketDto {
-
+public class TicketResponse {
     private Integer idTicket;
     private String folioTicket;
     private LocalDate fechaTicket;
     private UsuarioDto usuarioInfo;
     private TipoPagoDto tipoPago;
-    private ArrayList<DetalleTicketDto> detalles=new ArrayList<>();
+    private ArrayList<Detalle> detalles;
     private BigDecimal subtotal;
     private BigDecimal impuestos;
     private BigDecimal total;
     private String observaciones;
     private Boolean activo;
+
+
+    public TicketResponse(TicketVenta ticketVenta) {
+        this.idTicket=ticketVenta.getIdTicket();
+        this.folioTicket=ticketVenta.getFolioTicket();
+        this.usuarioInfo=new UsuarioDto(ticketVenta.getUsuarioInfo());
+        this.tipoPago=(ticketVenta.getTipoPago()!=null)?(TipoPagoDto.convertToDto(ticketVenta.getTipoPago())):(new TipoPagoDto());
+        this.detalles=new ArrayList<>();
+        for (DetalleTicket detalleTicket:ticketVenta.getDetalles()){
+            Detalle detalle=new Detalle(detalleTicket);
+            detalles.add(detalle);
+        }
+        this.subtotal=ticketVenta.getSubtotal();
+        this.impuestos=ticketVenta.getImpuestos();
+        this.total=ticketVenta.getTotal();
+        this.observaciones=ticketVenta.getObservaciones();
+        this.activo=ticketVenta.getActivo();
+    }
+    public TicketResponse() {
+        detalles=new ArrayList<>();
+    }
 
     public Integer getIdTicket() {
         return idTicket;
@@ -61,11 +83,11 @@ public class TicketDto {
         this.tipoPago = tipoPago;
     }
 
-    public ArrayList<DetalleTicketDto> getDetalles() {
+    public ArrayList<Detalle> getDetalles() {
         return detalles;
     }
 
-    public void setDetalles(ArrayList<DetalleTicketDto> detalles) {
+    public void setDetalles(ArrayList<Detalle> detalles) {
         this.detalles = detalles;
     }
 
@@ -107,32 +129,5 @@ public class TicketDto {
 
     public void setActivo(Boolean activo) {
         this.activo = activo;
-    }
-
-    public static TicketDto convertToTicketDto(TicketVenta ticket){
-        TicketDto ticketDto=new TicketDto();
-        ticketDto.setIdTicket(ticket.getIdTicket());
-        ticketDto.setFolioTicket(ticket.getFolioTicket());
-        ticketDto.setFechaTicket(ticket.getFechaTicket());
-        UsuarioDto usuarioDto=new UsuarioDto(ticket.getUsuarioInfo());
-        ticketDto.setUsuarioInfo(usuarioDto);
-        if (ticket.getTipoPago() != null) {
-            ticketDto.setTipoPago(TipoPagoDto.convertToDto(ticket.getTipoPago()));
-        }
-
-
-        ArrayList<DetalleTicketDto>detalleDtoList=new ArrayList<>();
-        for (DetalleTicket detalleTicket : ticket.getDetalles()){
-            DetalleTicketDto converted=DetalleTicketDto.convertToDetalleTicketDto(detalleTicket);
-            detalleDtoList.add(converted);
-        }
-        ticketDto.setDetalles(detalleDtoList);
-        ticketDto.setSubtotal(ticket.getSubtotal());
-        ticketDto.setImpuestos(ticket.getImpuestos());
-        ticketDto.setTotal(ticket.getTotal());
-        ticketDto.setObservaciones(ticket.getObservaciones());
-        ticketDto.setActivo(ticket.getActivo());
-        
-        return ticketDto;
     }
 }

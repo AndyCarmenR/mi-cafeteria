@@ -34,7 +34,7 @@ public class DetalleTicket {
             joinColumns = @JoinColumn(name = "ID_DETALLE_TICKET"),
             inverseJoinColumns = @JoinColumn(name = "ID_EXTRA")
     )
-    private List<CatExtras> extras=new ArrayList<>();
+    private List<CatExtras> extras;
 
     @OneToOne
     @JoinColumn(name = "ID_DESCUENTO")
@@ -44,6 +44,9 @@ public class DetalleTicket {
     @JoinColumn(name = "ID_PAQUETE")
     private Paquete paquete;
 
+    public DetalleTicket() {
+        extras=new ArrayList<>();
+    }
 
     public Integer getIdDetalleTicket() {
         return idDetalleTicket;

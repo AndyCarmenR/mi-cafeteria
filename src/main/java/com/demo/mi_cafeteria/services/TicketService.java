@@ -1,8 +1,12 @@
 package com.demo.mi_cafeteria.services;
 
-import com.demo.mi_cafeteria.model.dto.DetalleTicketDto;
-import com.demo.mi_cafeteria.model.dto.TicketDto;
-import com.demo.mi_cafeteria.model.entity.*;
+import com.demo.mi_cafeteria.model.entity.CatTipoPago;
+import com.demo.mi_cafeteria.model.entity.DetalleTicket;
+import com.demo.mi_cafeteria.model.entity.TicketVenta;
+import com.demo.mi_cafeteria.model.entity.UsuarioPWD;
+import com.demo.mi_cafeteria.model.requests.TicketRequest;
+import com.demo.mi_cafeteria.model.responses.Detalle;
+import com.demo.mi_cafeteria.model.responses.TicketResponse;
 import com.demo.mi_cafeteria.repository.TicketVentaRepository;
 import com.demo.mi_cafeteria.repository.UsuarioInfoRepository;
 import com.demo.mi_cafeteria.utils.BadRequestException;
@@ -41,7 +45,7 @@ public class TicketService {
         return foilTemplate.concat(String.valueOf(ticketId).length()==1?"0"+String.valueOf(ticketId):String.valueOf(ticketId));
     }
 
-    public TicketDto createNewTicket(TicketDto ticket){
+    public TicketResponse createNewTicket(TicketRequest ticket){
         TicketVenta ticketVenta=new TicketVenta();
         UsuarioPWD usr=pwdService.getAuthenicatedUser();
         ticketVenta.setFechaTicket(LocalDate.now());
@@ -49,8 +53,9 @@ public class TicketService {
         ticketVenta.setUsuarioInfo(usr.getUsuarioInfo());
 
         ticketRepo.save(ticketVenta);
-        List<DetalleTicket>detalle= detalleTicketService.createNewDetalleTicket(ticket, ticketVenta);
-        ticketVenta.setDetalles(detalle);
+        List<DetalleTicket>detalles= detalleTicketService.createNewDetalleTicket(ticket, ticketVenta);
+
+        ticketVenta.setDetalles(detalles);
 
         ticketVenta.setFolioTicket(createNewTicketFolio(ticketVenta.getIdTicket()));
         ticketVenta.setSubtotal(calcularSubTotal(ticketVenta));
@@ -60,11 +65,11 @@ public class TicketService {
 
         ticketRepo.save(ticketVenta);
 
-        return TicketDto.convertToTicketDto(ticketVenta);
+        return new TicketResponse(ticketVenta);
     }
 
-    public TicketDto addNewDetalle(DetalleTicketDto ticket){
-        TicketVenta ticketVenta=ticketRepo.findById(ticket.getTicketVenta()).orElseThrow(()->new BadRequestException("El ticket que estas buscando no existe, revise sus parametros"));
+    public TicketResponse addNewDetalle(Detalle ticket){
+        TicketVenta ticketVenta=ticketRepo.findById(ticket.getIdTicketVenta()).orElseThrow(()->new BadRequestException("El ticket que estas buscando no existe, revise sus parametros"));
 
         DetalleTicket detalleTicket=detalleTicketService.addNewDetalleToTicket(ticket,ticketVenta);
         ticketVenta.getDetalles().add(detalleTicket);
@@ -73,17 +78,17 @@ public class TicketService {
         ticketVenta.setTotal(calcularTotal(ticketVenta.getSubtotal(),ticketVenta.getImpuestos()));
 
         ticketRepo.save(ticketVenta);
-        return TicketDto.convertToTicketDto(ticketVenta);
+        return new TicketResponse(ticketVenta);
     }
 
-    public TicketDto cerrarTicket(TicketDto ticket){
+    public TicketResponse cerrarTicket(TicketRequest ticket){
         TicketVenta ticketVenta=ticketRepo.findById(ticket.getIdTicket()).orElseThrow(()->new BadRequestException("El ticket que estas buscando no existe, revise sus parametros"));
-        CatTipoPago tipoPago = catalogService.getTipoPagoById(ticket.getTipoPago().getIdTipoPago());
+        CatTipoPago tipoPago = catalogService.getTipoPagoById(ticket.getIdTipoPago());
         ticketVenta.setTipoPago(tipoPago);
         ticketVenta.setActivo(Boolean.FALSE);
         ticketVenta.setObservaciones(ticket.getObservaciones());
         ticketRepo.save(ticketVenta);
-        return TicketDto.convertToTicketDto(ticketVenta);
+        return new TicketResponse(ticketVenta);
     }
 
     private BigDecimal calcularSubTotal(@NotNull TicketVenta ticket){

@@ -1,10 +1,10 @@
 package com.demo.mi_cafeteria.services;
 
 import com.demo.mi_cafeteria.model.dto.DescuentoArticuloDto;
-import com.demo.mi_cafeteria.model.dto.DetalleTicketDto;
 import com.demo.mi_cafeteria.model.dto.ExtrasDto;
-import com.demo.mi_cafeteria.model.dto.TicketDto;
 import com.demo.mi_cafeteria.model.entity.*;
+import com.demo.mi_cafeteria.model.requests.TicketRequest;
+import com.demo.mi_cafeteria.model.responses.Detalle;
 import com.demo.mi_cafeteria.repository.*;
 import com.demo.mi_cafeteria.utils.BadRequestException;
 import com.demo.mi_cafeteria.utils.NotFoundException;
@@ -33,21 +33,22 @@ public class DetalleTicketService {
     @Autowired
     private CatalogService catalogService;
 
-    public List<DetalleTicket>createNewDetalleTicket(TicketDto ticketDto,TicketVenta ticket){
+    public List<DetalleTicket>createNewDetalleTicket(TicketRequest ticketDto, TicketVenta ticket){
         List<DetalleTicket>detalles=new ArrayList<>();
 
 
         List<CatExtras>extrasList=new ArrayList<>();
-        for (DetalleTicketDto dto:ticketDto.getDetalles()){
+        for (Detalle detalle:ticketDto.getDetalles()){
             DetalleTicket dt=new DetalleTicket();
+
             dt.setTicketVenta(ticket);
             Optional<CatArticulosVenta> avo=Optional.empty();
             Boolean isArticulo=Boolean.TRUE;
             try {
-                avo=articulosVentaRepo.findById(dto.getArticuloVenta().getIdArticuloVenta());
+                avo=articulosVentaRepo.findById(detalle.getArticuloVenta().getIdArticuloVenta());
             } catch (Exception e) {
                 isArticulo=Boolean.FALSE;
-                Paquete paquete=catalogService.getPaqueteById(dto.getPaquete().getIdPaquete());
+                Paquete paquete=catalogService.getPaqueteById(detalle.getPaquete().getIdPaquete());
                 if (paquete == null) {
                     throw new NotFoundException("El articulo o paquete que estas buscando no existe, por favor revisa tus parametros");
                 }
@@ -57,13 +58,13 @@ public class DetalleTicketService {
 
 
             Optional<DescuentoArticulo> descOpt = Optional.empty();
-            DescuentoArticuloDto desc=dto.getDescuento();
+            DescuentoArticuloDto desc=detalle.getDescuento();
             if (desc!=null) {
-                descOpt=descuentoArticuloRepo.findById(dto.getDescuento().getIdDescuento());
+                descOpt=descuentoArticuloRepo.findById(detalle.getDescuento().getIdDescuento());
             }
             descOpt.ifPresent(dt::setDescuentoArticulo);
 
-            for (ExtrasDto e: dto.getExtras()){
+            for (ExtrasDto e: detalle.getExtras()){
                 Optional<CatExtras>extrasOptional;
                 try {
                     extrasOptional=extrasRepos.findById(e.getIdExtra());
@@ -73,7 +74,7 @@ public class DetalleTicketService {
                 extrasOptional.ifPresent(extrasList::add);
             }
             dt.setExtras(extrasList);
-            dt.setCantidadArticulos(dto.getCantidadArticulos());
+            dt.setCantidadArticulos(detalle.getCantidadArticulos());
             if (isArticulo.equals(Boolean.TRUE)) {
                 dt.setTotalVenta(calcularTotalArticulos(dt));
             }else {
@@ -87,16 +88,16 @@ public class DetalleTicketService {
     }
 
 
-    public DetalleTicket addNewDetalleToTicket(DetalleTicketDto dto,TicketVenta ticket){
+    public DetalleTicket addNewDetalleToTicket(Detalle detalle,TicketVenta ticket){
         DetalleTicket dt=new DetalleTicket();
         dt.setTicketVenta(ticket);
         Optional<CatArticulosVenta> avo=Optional.empty();
         Boolean isArticulo=Boolean.TRUE;
         try {
-            avo=articulosVentaRepo.findById(dto.getArticuloVenta().getIdArticuloVenta());
+            avo=articulosVentaRepo.findById(detalle.getArticuloVenta().getIdArticuloVenta());
         } catch (Exception e) {
             isArticulo=Boolean.FALSE;
-            Paquete paquete=catalogService.getPaqueteById(dto.getPaquete().getIdPaquete());
+            Paquete paquete=catalogService.getPaqueteById(detalle.getPaquete().getIdPaquete());
             if (paquete == null) {
                 throw new NotFoundException("El articulo o paquete que estas buscando no existe, por favor revisa tus parametros");
             }
@@ -105,14 +106,14 @@ public class DetalleTicketService {
         avo.ifPresent(dt::setArticuloVenta);
 
         Optional<DescuentoArticulo> descOpt = Optional.empty();
-        DescuentoArticuloDto desc=dto.getDescuento();
+        DescuentoArticuloDto desc=detalle.getDescuento();
         if (desc!=null) {
-            descOpt=descuentoArticuloRepo.findById(dto.getDescuento().getIdDescuento());
+            descOpt=descuentoArticuloRepo.findById(detalle.getDescuento().getIdDescuento());
         }
         descOpt.ifPresent(dt::setDescuentoArticulo);
 
         List<CatExtras> extrasList=new ArrayList<>();
-        for (ExtrasDto e: dto.getExtras()) {
+        for (ExtrasDto e: detalle.getExtras()) {
             Optional<CatExtras> extrasOptional;
             try {
                 extrasOptional = extrasRepos.findById(e.getIdExtra());
@@ -122,7 +123,7 @@ public class DetalleTicketService {
             extrasOptional.ifPresent(extrasList::add);
         }
         dt.setExtras(extrasList);
-        dt.setCantidadArticulos(dto.getCantidadArticulos());
+        dt.setCantidadArticulos(detalle.getCantidadArticulos());
         if (isArticulo.equals(Boolean.TRUE)) {
             dt.setTotalVenta(calcularTotalArticulos(dt));
         }else {
