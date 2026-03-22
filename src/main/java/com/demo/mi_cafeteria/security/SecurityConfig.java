@@ -104,7 +104,8 @@ public class SecurityConfig {
                         // Public endpoints - no authentication required
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()//
+                        .requestMatchers("/swagger-ui/index.html").permitAll()
                         // Protected endpoints - JWT authentication required
                         .requestMatchers("/api/role/**").authenticated()
                         .requestMatchers("/api/catalog/**").authenticated()
