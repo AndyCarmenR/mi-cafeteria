@@ -1,0 +1,63 @@
+meta {
+  name: tablet-sso-verify
+  type: http
+  seq: 4
+}
+
+post {
+  url: /api/auth/sso/verify
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    {
+      "username": "cajera01",
+      "code": "123456",
+      "tenantSlug": "lupitas",
+      "spa": "pos"
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # POST /api/auth/sso/verify
+  
+    ## Descripción
+    Paso 2 del login de tableta. La empleada ingresa el código OTP
+    de 6 dígitos. Si es válido, el servidor retorna un JWT de 24 horas.
+  
+    ## Flujo después de este request
+    1. Next.js guarda el token en cookie auth-token-{spa} (httpOnly)
+    2. proxy.ts verifica esa cookie en cada request a /{spa}
+    3. Redirige a /{spa} (ej. /pos, /kitchen, /bar)
+  
+    ## Códigos de prueba (mock server)
+    cajera01   → 123456
+    panadera01 → 234567
+    barista01  → 345678
+  
+    ## Reglas de negocio
+    - El código debe ser exactamente 6 dígitos numéricos
+    - El código expira a los 5 minutos de haberse solicitado
+    - El código es de un solo uso — después de verificarse se invalida
+    - La sesión dura exactamente 24 horas
+    - Cada SPA tiene su propia cookie independiente
+  
+    ## Errores esperados
+    422 CODE_INCORRECT    - El código no coincide
+    422 CODE_EXPIRED      - El código ya expiró (pasaron más de 5 min)
+    422 CODE_ALREADY_USED - El código ya fue utilizado anteriormente
+    404 USER_NOT_FOUND    - El username no existe
+    403 USER_INACTIVE     - La cuenta está desactivada
+}

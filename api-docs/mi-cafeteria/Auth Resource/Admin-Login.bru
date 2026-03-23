@@ -1,0 +1,59 @@
+meta {
+  name: Admin-Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: /api/auth/admin/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    {
+      "email": "admin@lupitas.mx",
+      "password": "12345678"
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.token: isDefined
+  res.body.data.tenantId: isDefined
+  res.body.data.roles[0]: eq ADMINISTRADORA
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # POST /api/auth/admin/login
+  
+    ## Descripción
+    Login del panel de administración. Recibe email + contraseña
+    y retorna un JWT de 8 horas guardado como cookie httpOnly.
+  
+    ## Quién lo llama
+    adminLoginAction en app/actions/auth.ts
+  
+    ## Flujo después de este request
+    1. Next.js guarda el token en cookie auth-token-admin (httpOnly)
+    2. proxy.ts verifica esa cookie en cada request a /admin
+    3. El JWT debe incluir tenantId — si no coincide con el subdominio, sesión inválida
+  
+    ## Reglas de negocio
+    - Solo accesible desde el subdominio del tenant (lupitas.micafeteria.mx)
+    - La sesión dura exactamente 8 horas
+    - La cookie es httpOnly — JS del browser no puede leerla
+    - En producción la cookie requiere HTTPS
+  
+    ## Errores esperados
+    404 USER_NOT_FOUND      - El email no existe en este tenant
+    401 INVALID_CREDENTIALS - Contraseña incorrecta
+    403 USER_INACTIVE       - La cuenta está desactivada
+}

@@ -1,0 +1,63 @@
+meta {
+  name: tablet-sso-request
+  type: http
+  seq: 3
+}
+
+post {
+  url: /api/auth/sso/request
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    {
+      "username": "cajera01",
+      "tenantSlug": "lupitas",
+      "spa": "pos"
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.expiresIn: isDefined
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # POST /api/auth/sso/request
+  
+    ## Descripción
+    Paso 1 del login de tableta. La empleada ingresa su username
+    y el servidor genera un código OTP de 6 dígitos que el admin
+    le entrega en persona.
+  
+    ## Campo spa — valores válidos
+    "pos"     → cajeras y baristas con rol combinado
+    "kitchen" → panaderas
+    "bar"     → baristas
+  
+    ## Reglas de negocio
+    - El username debe tener entre 3 y 30 caracteres
+    - Solo acepta letras minúsculas, números, puntos y guiones
+    - Si el usuario no pertenece al spa solicitado, se rechaza
+    - El código generado expira en 300 segundos (5 minutos)
+    - El código es de un solo uso — al verificarse se invalida
+    - Si hay demasiados intentos, el servidor responde RATE_LIMITED
+  
+    ## Usuarios de prueba (mock server)
+    cajera01   → spa: pos
+    panadera01 → spa: kitchen
+    barista01  → spa: bar
+  
+    ## Errores esperados
+    404 USER_NOT_FOUND - El username no existe en este tenant
+    403 USER_INACTIVE  - La cuenta está desactivada
+    429 RATE_LIMITED   - Demasiados intentos recientes
+}
