@@ -5,3 +5,16 @@ info:
 
 request:
   auth: inherit
+
+docs:
+  content: |-
+    v1: needs register form for user who is part of the cafeteria, needs: interface User {
+      id:         string
+      tenantId:   string       // a qué cafetería pertenece
+      email?:     string       // solo admins — tabletas usan username
+      username?:  string       // solo tabletas
+      roles:      TabletSpa[]  // CAJERA | PANADERA | BARISTA | AUXILIAR
+      active:     boolean      // activar/desactivar sin eliminar
+      createdAt:  number
+    }
+  type: text/markdown
