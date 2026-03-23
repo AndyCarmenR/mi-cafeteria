@@ -1,0 +1,17 @@
+info:
+  name: tipo-pago
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://localhost:8080/api/catalog/tipo-pago
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsInN1YiI6ImFuZHlDUiIsImlhdCI6MTc1NjE3Nzg1MCwiZXhwIjoxNzU2MjY0MjUwfQ.PvoewoWbxm5FAOpruLyvbl_oNn0kwNQkhjMoGA7WrrA
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

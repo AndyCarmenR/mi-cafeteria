@@ -1,0 +1,23 @@
+meta {
+  name: login
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/auth/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "nickName":"andyCR",
+      "password":"$2a$12$HfZTD8/Ps3DaZuRFS7SflOMTnuUhl/cC3yC2cBUbNPunjKEUc/6/W"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
