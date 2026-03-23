@@ -25,6 +25,9 @@ replay_pid*
 
 # Maven
 target/
-
+# Bruno secrets and local environment overrides
+api-docs/*.json.local
+api-docs/**/*.bru.local
+.bruno/
 
 

@@ -1,0 +1,17 @@
+info:
+  name: paquete
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: http://localhost:8080/api/catalog/paquetes
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsInN1YiI6ImFuZHlDUiIsImlhdCI6MTc1Njk0NzU2MywiZXhwIjoxNzU3MDMzOTYzfQ.AoJIWbFJNkDEjTFJNl-fVLbTBNoZ3NAEBTJwgkwgqNc
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

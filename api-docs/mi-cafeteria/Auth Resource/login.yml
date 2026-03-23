@@ -1,0 +1,26 @@
+info:
+  name: login
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8080/api/auth/login
+  body:
+    type: json
+    data: "{\r
+
+      \    \"nickName\":\"andyCR\",\r
+
+      \    \"password\":\"$2a$12$HfZTD8/Ps3DaZuRFS7SflOMTnuUhl/cC3yC2cBUbNPunjKEUc/6/W\"\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: "v1: Admin Login needs email and password as describe US-AUTH-002 and for clients in kitchen and bar needs username and sso US-AUTH-003 "

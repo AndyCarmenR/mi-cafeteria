@@ -1,0 +1,28 @@
+info:
+  name: add detalle
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: http://localhost:8080/api/tickets/detalle
+  body:
+    type: json
+    data: "{\r
+
+      \    \"ticketVenta\":34,\r
+
+      \    \"articuloVenta\":{\"idArticuloVenta\":1},\r
+
+      \    \"cantidadArticulos\":2\r
+
+      }"
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsInN1YiI6ImFuZHlDUiIsImlhdCI6MTc1NzM5MDY0OSwiZXhwIjoxNzU3NDc3MDQ5fQ.smco7fvr41hBrTL05crRYlefTsSTt9Yb43Kp-TkFBQM
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

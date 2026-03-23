@@ -1,0 +1,28 @@
+info:
+  name: close ticket
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: http://localhost:8080/api/tickets/ticket
+  body:
+    type: json
+    data: "{\r
+
+      \   \"idTicket\":34,\r
+
+      \   \"tipoPago\":{\"idTipoPago\":1},\r
+
+      \   \"observaciones\":\"cuaenta cerrada, pago en efectivo\"\r
+
+      }"
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsInN1YiI6ImFuZHlDUiIsImlhdCI6MTc1NzM4Nzg3MywiZXhwIjoxNzU3NDc0MjczfQ.cS1QwgpDtQ5d3JfrjkA9IUgcpQOnCosnqac8Jdfg2o4
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
