@@ -1,0 +1,250 @@
+meta {
+  name: Registrar Cafetería (Onboarding)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/tenants/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "slug": "lupitas",
+    "name": "Café Lupita's",
+    "email": "admin@lupitas.mx",
+    "password": "12345678",
+    "rfc": "LUPE123456ABC",
+    "address": "Av. Principal 123, Col. Centro, CDMX",
+    "phone": "+52 55 1234 5678",
+    "ticketMessage": "¡Gracias por tu preferencia!",
+    "ivaRate": 16,
+    "paymentMethods": {
+      "cash": true,
+      "card": true,
+    },
+    "schedule": {
+      "openTime": "08:00",
+      "closeTime": "21:00",
+      "openDays": [true, true, true, true, true, true, false]
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.slug: isDefined
+  res.body.data.tenantId: isDefined
+}
+
+docs {
+  # POST /api/tenants/register
+  
+  ## Descripción
+  Crea un nuevo tenant (cafetería) junto con la cuenta de la administradora inicial.
+  Es el último paso del OnboardingWizard (paso 4).
+  
+  ## Quién lo llama
+  features/business-config/application/registerCafeteria.ts
+  vía app/actions/businessConfig.ts
+  
+  ## Reglas de negocio
+  - El slug debe ser único en toda la plataforma
+  - El slug acepta solo letras minúsculas, números y guiones (a-z, 0-9, -)
+  - El slug tiene entre 3 y 30 caracteres y NO puede modificarse después
+  - La primera usuaria adquiere automáticamente el rol ADMINISTRADORA
+  - La password debe tener mínimo 8 caracteres
+  - El rfc puede ser 12 chars (persona moral) o 13 (persona física)
+  - ivaRate acepta solo: 0, 8 o 16
+  - Al registrarse, el frontend redirige a {slug}.micafeteria.mx/login
+  
+  ## Errores esperados
+  409 SLUG_TAKEN     - El slug ya está registrado
+  400 MISSING_FIELDS - Faltan campos obligatorios
+  400 INVALID_SLUG   - El slug no cumple el formato
+  400 INVALID_RFC    - RFC con longitud incorrecta
+  409 EMAIL_TAKEN    - El email ya tiene una cuenta
+}
+
+example {
+  name: 200-ok
+  
+  request: {
+    url: {{base_url}}/api/tenants/register
+    method: POST
+    mode: json
+    headers: {
+      Content-Type: application/json
+    }
+  
+    body:json: {
+      {
+        "slug": "lupitas",
+        "name": "Café Lupita's",
+        "email": "admin@lupitas.mx",
+        "password": "12345678",
+        "rfc": "LUPE123456ABC",
+        "address": "Av. Principal 123, Col. Centro, CDMX",
+        "phone": "+52 55 1234 5678",
+        "ticketMessage": "¡Gracias por tu preferencia!",
+        "ivaRate": 16,
+        "paymentMethods": {
+          "cash": true,
+          "card": true,
+          "qr": false,
+          "transfer": false
+        },
+        "schedule": {
+          "openTime": "08:00",
+          "closeTime": "21:00",
+          "openDays": [true, true, true, true, true, true, false]
+        }
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          {
+            "data": {
+              "tenantId": "t-lupitas",
+              "slug": "lupitas",
+              "message": "Cafetería registrada exitosamente"
+            },
+            "status": 200
+          }
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 400-Missing-Fields
+  
+  request: {
+    url: {{base_url}}/api/tenants/register
+    method: POST
+    mode: json
+    headers: {
+      Content-Type: application/json
+    }
+  
+    body:json: {
+      {
+        "slug": "lupitas",
+        "name": "Café Lupita's",
+        "email": "admin@lupitas.mx",
+        "password": "12345678",
+        "rfc": "LUPE123456ABC",
+        "address": "Av. Principal 123, Col. Centro, CDMX",
+        "phone": "+52 55 1234 5678",
+        "ticketMessage": "¡Gracias por tu preferencia!",
+        "ivaRate": 16,
+        "paymentMethods": {
+          "cash": true,
+          "card": true,
+          "qr": false,
+          "transfer": false
+        },
+        "schedule": {
+          "openTime": "08:00",
+          "closeTime": "21:00",
+          "openDays": [true, true, true, true, true, true, false]
+        }
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          {
+            "error": "MISSING_FIELDS",
+            "message": "Faltan campos requeridos",
+            "status": 400
+          }
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 409-Slug-Taken
+  
+  request: {
+    url: {{base_url}}/api/tenants/register
+    method: POST
+    mode: json
+    headers: {
+      Content-Type: application/json
+    }
+  
+    body:json: {
+      {
+        "slug": "lupitas",
+        "name": "Café Lupita's",
+        "email": "admin@lupitas.mx",
+        "password": "12345678",
+        "rfc": "LUPE123456ABC",
+        "address": "Av. Principal 123, Col. Centro, CDMX",
+        "phone": "+52 55 1234 5678",
+        "ticketMessage": "¡Gracias por tu preferencia!",
+        "ivaRate": 16,
+        "paymentMethods": {
+          "cash": true,
+          "card": true,
+          "qr": false,
+          "transfer": false
+        },
+        "schedule": {
+          "openTime": "08:00",
+          "closeTime": "21:00",
+          "openDays": [true, true, true, true, true, true, false]
+        }
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 409
+      text: Conflict
+    }
+  
+    body: {
+      type: text
+      content: '''
+         {
+          {
+            "error": "SLUG_TAKEN",
+            "message": "Ese nombre ya está en uso",
+            "status": 409
+          }
+        }
+      '''
+    }
+  }
+}
